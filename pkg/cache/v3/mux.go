@@ -57,6 +57,7 @@ func (mux *MuxCache) CreateDeltaWatch(request *DeltaRequest, state stream.Stream
 	return cache.CreateDeltaWatch(request, state, value)
 }
 
+//nolint:all
 func (mux *MuxCache) Fetch(ctx context.Context, request *Request) (Response, error) {
 	return nil, errors.New("not implemented")
 }

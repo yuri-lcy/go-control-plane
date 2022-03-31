@@ -341,10 +341,11 @@ func TestSnapshotCacheWatch(t *testing.T) {
 
 func TestConcurrentSetWatch(t *testing.T) {
 	c := cache.NewSnapshotCache(false, group{}, logger{t: t})
-	for i := 0; i < 50; i++ {
-		t.Run(fmt.Sprintf("worker%d", i), func(t *testing.T) {
+	for index := 0; index < 50; index++ {
+		t.Run(fmt.Sprintf("worker%d", index), func(t *testing.T) {
+			i := index
 			t.Parallel()
-			id := fmt.Sprintf("%d", i%2)
+			id := t.Name()
 			value := make(chan cache.Response, 1)
 			if i < 25 {
 				snap := cache.Snapshot{}
@@ -520,6 +521,10 @@ type singleResourceSnapshot struct {
 }
 
 func (s *singleResourceSnapshot) GetVersion(typeURL string) string {
+	if typeURL != s.typeurl {
+		return ""
+	}
+
 	return s.version
 }
 
@@ -538,6 +543,7 @@ func (s *singleResourceSnapshot) GetResources(typeURL string) map[string]types.R
 	if typeURL != s.typeurl {
 		return nil
 	}
+
 	return map[string]types.Resource{
 		s.name: s.resource,
 	}
